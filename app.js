@@ -8,18 +8,51 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-const MongoClient = require("mongodb").MongoClient;
-MongoClient.connect("mongodb+srv://johannabertils:Bertils96@nyhetsbrev.vrps7.mongodb.net/Nyhetsbrev?retryWrites=true&w=majority", {
-    useUnifiedTopology:true 
-})
-.then(client => {
-    console.log("Vi är uppkopplade mot databasen!");
+// Connect to MongoDB server with Mongoose
 
-    const db = client.db("users");
-    app.locals.db = db;
-})
+const mongoose = require('mongoose');
 
+const URI = "mongodb+srv://johannabertils:Bertils96@nyhetsbrev.vrps7.mongodb.net/Nyhetsbrev?retryWrites=true&w=majority";
 
+mongoose.connect(URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoose.connection.on("connected", () => {
+    console.log("mongoose is connected");
+});
+
+// define schema
+
+const Schema = mongoose.Schema;
+const usersSchema = new Schema({
+    userName: String, 
+    password: String,
+    email: String, 
+    subscribe: { type : Boolean }
+});
+
+// model
+const usersModel = mongoose.model("users", usersSchema);
+
+// save data to mongodatabase
+const data ={
+    userName: "Johanna", 
+    password: "johanna", 
+    email: "johanna@outlook.com",
+    subscribe: true
+};
+
+const newUser = new usersModel(data);
+
+newUser.save((error)=> {
+if (error) {
+    console.log("something happened")
+} else {
+    console.log("Data has been saved");
+}
+}); 
 
 app.use(logger('dev'));
 app.use(express.json());
