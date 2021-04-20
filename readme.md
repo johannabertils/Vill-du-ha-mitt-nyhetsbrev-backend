@@ -1,17 +1,23 @@
 
 # Installations
 
-express: 
+Express: 
 
 ```bash
 npx express-generator --no-view  
 Npm install 
 Npm start
-Gå in på localhost:3000 i webbläsaren
+--> localhost:3000 i webbläsaren
 ```
 
-cors: 
+Cors: 
 
 ```bash
  npm install cors
+```
+
+Mangodb: 
+
+```bash
+ npm install mangodb 
 ```
