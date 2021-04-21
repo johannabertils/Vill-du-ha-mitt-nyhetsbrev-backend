@@ -25,3 +25,9 @@ Mongoose
 ```bash
  npm install mongoose
 ```
+
+# How to
+
+```bash
+ localhost:3010 -> login with username "admin".
+```
