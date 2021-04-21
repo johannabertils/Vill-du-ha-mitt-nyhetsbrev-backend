@@ -44,7 +44,7 @@ router.get('/', function(req, res, next) {
   usersModel.find({ })
   .then((data)=> {
     console.log("data:", data);
-    let printUsers = "<div><h2>Våra användare</h2>"
+    let printUsers = "<div><h2>Användare</h2>"
 
 for (user in data){
   printUsers += "<div><h3>" + data[user].userName +"</h3>"
