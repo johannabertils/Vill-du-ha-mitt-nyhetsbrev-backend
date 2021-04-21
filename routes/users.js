@@ -47,6 +47,8 @@ router.get('/', function (req, res, next) {
 
 });
 
+// -------- register new user ------------------------
+
 router.post("/new", function (req, res) {
   console.log("Ny användare sparad");
   newUserInfo = req.body.newUserInfo;
@@ -61,15 +63,18 @@ router.post("/new", function (req, res) {
 
   const newUser = new usersModel(data);
 
-  newUser.save((error) => {
+   newUser.save((error) => {
     if (error) {
       console.log("something happened")
     } else {
       console.log("Data has been saved");
     }
   });
+
 });
 
+
+// checking if password and usernamne is correct
 router.post("/login", function (req, res) {
   console.log("Ny användare sparad");
   userInfo = req.body.userInfo;
@@ -81,16 +86,16 @@ router.post("/login", function (req, res) {
 
   query.exec(function (err, user) {
     if (user === null) {
-      res.json({ fel:"fel användarnamn"});
+      res.json("fel inlogg");
       console.log("fel användarnamn");
     } else {
       console.log('%s %s', user.userName, user.password);
 
       if (userInfo.password === user.password){
         console.log("rätt lösenord");
-        res.json({ inloggnad:"Inloggad"});
+        res.json("Inloggad");
       } else {
-        res.json({ fel:"fel lösenord"});
+        res.json("fel inlogg");
         console.log("fel lösenord");
       }
     }
