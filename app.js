@@ -14,45 +14,19 @@ const mongoose = require('mongoose');
 
 const URI = "mongodb+srv://johannabertils:Bertils96@nyhetsbrev.vrps7.mongodb.net/Nyhetsbrev?retryWrites=true&w=majority";
 
-mongoose.connect(URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-mongoose.connection.on("connected", () => {
-    console.log("mongoose is connected");
-});
-
-// define schema
-
-const Schema = mongoose.Schema;
-const usersSchema = new Schema({
-    userName: String, 
-    password: String,
-    email: String, 
-    subscribe: { type : Boolean }
-});
-
-// model
-const usersModel = mongoose.model("users", usersSchema);
-
-// save data to mongodatabase
-const data ={
-    userName: "Johanna", 
-    password: "johanna", 
-    email: "johanna@outlook.com",
-    subscribe: true
-};
-
-const newUser = new usersModel(data);
-
-newUser.save((error)=> {
-if (error) {
-    console.log("something happened")
-} else {
-    console.log("Data has been saved");
-}
-}); 
+app.use(function(req,res,next) {
+    mongoose.connect(URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function callback () {
+      console.log('DB initialised successfully');
+      app.locals.db = db;
+    });
+    next();
+  });
 
 app.use(logger('dev'));
 app.use(express.json());

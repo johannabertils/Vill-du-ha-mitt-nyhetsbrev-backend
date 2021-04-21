@@ -5,31 +5,66 @@ const cors = require("cors");
 
 router.use(cors()); 
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
+var mongoose = require('mongoose');
+const { subscribe } = require('../app');
 
-  req.app.locals.db.collection("users").find().toArray()
-  .then(results => {
-console.log(results);
+// scheama for users
+var Schema = mongoose.Schema;
 
-let printUsers = "<div><h2>Våra users</h2>"
+const usersSchema = new Schema({
+      userName: String, 
+      password: String,
+      email: String, 
+      subscribe: { type : Boolean }
+  });
 
-for (user in results){
-  printUsers += "<div>" + results[user].firstName + "</div>"
+  const usersModel = mongoose.model("users", usersSchema);
+
+ // save data to mongodatabase
+
+const data ={
+    userName: "Johanna456", 
+    password: "johanna456", 
+    email: "johanna456@outlook.com",
+    subscribe: false
+};
+
+const newUser = new usersModel(data);
+
+newUser.save((error)=> {
+if (error) {
+    console.log("something happened")
+} else {
+    console.log("Data has been saved");
+}
+}); 
+
+// Print user information on admin page.
+router.get('/', function(req, res, next) {
+  usersModel.find({ })
+  .then((data)=> {
+    console.log("data:", data);
+    let printUsers = "<div><h2>Våra användare</h2>"
+
+for (user in data){
+  printUsers += "<div><h3>" + data[user].userName +"</h3>"
+
+  if (data[user].subscribe === true) {
+    printUsers +=  "Prenumererar: Ja, Epostadress: " + data[user].email + "</p></div>"
+  } else{
+    printUsers += "Prenumererar: Nej</p></div>"
+  }
+
     }
     printUsers += "</div>"
     
-  res.send(printUsers);
-})
-});
+    res.send(printUsers);
+  })
+  .catch((error ) => {
+    console.log("error:", daerrorta);
+  });
 
-router.post("/add", function(req,res) {
 
- req.app.locals.db.collection("users").insertOne(req.body)
- .then(result => {
-   console.log(result);
-   res.redirect("/show");
-})
 });
 
 
