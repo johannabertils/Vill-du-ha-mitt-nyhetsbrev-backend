@@ -21,6 +21,31 @@ const usersSchema = new Schema({
 
 const usersModel = mongoose.model("users", usersSchema);
 
+router.get('/admin', function (req, res, next) {
+
+    let inputField = `<div><h2>Logga in</h2>
+    <form method="post">
+    <div><input type="password" name="password"> Lösenord</div> 
+    <div><button type="submit">spara</button></div></form></div>`;
+
+    res.send(inputField);
+    
+});
+
+router.post('/admin', function (req, res) {
+
+    let password =  req.body.password; 
+    console.log(req.body.password);
+    let inputField =``; 
+        if (password == "admin") {
+            inputField += `<div><h2>Inloggad</h2></div>`; 
+        }  else{
+            inputField += `<div><h2>fel lösenord</h2></div>`; 
+        }
+        res.send(inputField);
+    });
+
+
 // Print user information on admin page.
 router.get('/', function (req, res, next) {
   usersModel.find({})
@@ -69,8 +94,10 @@ router.post("/new", function (req, res) {
       console.log("something happened")
     } else {
       console.log("Data has been saved");
+      res.json("User created");
     }
   });
+
 
 });
 
@@ -127,8 +154,8 @@ router.post("/login", function (req, res) {
     });
 });
 
-// Change subribtionstatus: Stop subscribing
-router.post("/stop", function (req, res) {
+// Change status of subscribtion
+router.post("/changestatus", function (req, res) {
     console.log("click på knapp");
     userId = req.body.id;
    changedStatus = req.body.changedStatus;
