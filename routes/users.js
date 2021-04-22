@@ -7,6 +7,7 @@ router.use(cors());
 
 
 var mongoose = require('mongoose');
+const { subscribe } = require('.');
 
 // scheama for users
 var Schema = mongoose.Schema;
@@ -82,25 +83,66 @@ router.post("/login", function (req, res) {
 
   const query = usersModel.findOne({ 'userName': userInfo.userName });
 
-  query.select('userName password');
+  query.select('userName password _id');
 
   query.exec(function (err, user) {
     if (user === null) {
-      res.json("fel inlogg");
+      res.json("error");
       console.log("fel användarnamn");
     } else {
-      console.log('%s %s', user.userName, user.password);
+      console.log('%s %s', user.userName, user.password, user._id);
 
       if (userInfo.password === user.password){
         console.log("rätt lösenord");
-        res.json("Inloggad");
+        res.json({
+            loggedin: "yes",
+            id: user._id
+        });
       } else {
-        res.json("fel inlogg");
+        res.json("error");
         console.log("fel lösenord");
       }
     }
   });
 });
 
+  // See if the user is subscribing to newsletter
+  router.post("/login/user", function (req, res) {
+    console.log("Funkar");
+   id = req.body.id;
+    console.log(id);
+
+    const query = usersModel.findOne({ '_id': id });
+
+    query.select('_id subscribe' );
+
+    query.exec(function (err, user) {
+        if (user.subscribe === true){
+            res.json("true");
+        console.log("user are subscribing");
+    } else {
+        res.json("false");
+        console.log("user are not subscribing");
+    }
+    });
+});
+
+// Change subribtionstatus: Stop subscribing
+router.post("/stop", function (req, res) {
+    console.log("click på knapp");
+    userId = req.body.id;
+   changedStatus = req.body.changedStatus;
+    console.log(changedStatus);
+    console.log(userId);
+
+    usersModel.findOneAndUpdate({_id: userId}, {$set:{subscribe:changedStatus}}, {new: true}, (err, doc) => {
+        if (err) {
+            console.log("Something wrong when updating data!");
+        }
+        console.log(doc);
+        res.json("Changed");
+    });
+
+});
 
 module.exports = router;
