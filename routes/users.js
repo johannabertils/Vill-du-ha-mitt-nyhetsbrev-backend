@@ -9,7 +9,7 @@ router.use(cors());
 var mongoose = require('mongoose');
 const { subscribe } = require('.');
 
-// scheama for users
+// ------------------------ Create Schema of users ------------------------
 var Schema = mongoose.Schema;
 
 const usersSchema = new Schema({
@@ -20,6 +20,8 @@ const usersSchema = new Schema({
 });
 
 const usersModel = mongoose.model("users", usersSchema);
+
+// ------------------------ Adminpage ------------------------
 
 router.get('/admin', function (req, res, next) {
 
@@ -39,41 +41,37 @@ router.post('/admin', function (req, res) {
     let inputField =``; 
         if (password == "admin") {
             inputField += `<div><h2>Inloggad</h2></div>`; 
+            usersModel.find({})
+            .then((data) => {
+              console.log("data123:", data);
+              inputField += `<div><h2>Användare</h2>`;
+        
+              for (user in data) {
+                inputField += `<div><h3>` + data[user].userName + `</h3>`;
+        
+                if (data[user].subscribe === true) {
+                    inputField += `Prenumererar: Ja, Epostadress: ` + data[user].email + `</p></div>`;
+                } else {
+                    inputField += `Prenumererar: Nej</p></div>`;
+                }
+        
+              }
+              inputField += `</div>`;
+              res.send(inputField);
+    
+            })
+            .catch((error) => {
+              console.log(`error:`, daerrorta);
+            });
+            
         }  else{
             inputField += `<div><h2>fel lösenord</h2></div>`; 
+            res.send(inputField);
         }
-        res.send(inputField);
+        
     });
 
-
-// Print user information on admin page.
-router.get('/', function (req, res, next) {
-  usersModel.find({})
-    .then((data) => {
-      console.log("data:", data);
-      let printUsers = "<div><h2>Användare</h2>"
-
-      for (user in data) {
-        printUsers += "<div><h3>" + data[user].userName + "</h3>"
-
-        if (data[user].subscribe === true) {
-          printUsers += "Prenumererar: Ja, Epostadress: " + data[user].email + "</p></div>"
-        } else {
-          printUsers += "Prenumererar: Nej</p></div>"
-        }
-
-      }
-      printUsers += "</div>"
-
-      res.send(printUsers);
-    })
-    .catch((error) => {
-      console.log("error:", daerrorta);
-    });
-
-});
-
-// -------- register new user ------------------------
+//------------------------ register new user ------------------------
 
 router.post("/new", function (req, res) {
   console.log("Ny användare sparad");
@@ -102,7 +100,7 @@ router.post("/new", function (req, res) {
 });
 
 
-// checking if password and usernamne is correct
+// ------------------------checking if password and usernamne is correct ------------------------
 router.post("/login", function (req, res) {
   console.log("Ny användare sparad");
   userInfo = req.body.userInfo;
@@ -133,7 +131,7 @@ router.post("/login", function (req, res) {
   });
 });
 
-  // See if the user is subscribing to newsletter
+  //------------------------  See if the user is subscribing to newsletter ------------------------
   router.post("/login/user", function (req, res) {
     console.log("Funkar");
    id = req.body.id;
@@ -154,7 +152,7 @@ router.post("/login", function (req, res) {
     });
 });
 
-// Change status of subscribtion
+// ------------------------ Change status of subscribtion ------------------------
 router.post("/changestatus", function (req, res) {
     console.log("click på knapp");
     userId = req.body.id;
