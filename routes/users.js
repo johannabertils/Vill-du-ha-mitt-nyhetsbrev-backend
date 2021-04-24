@@ -13,10 +13,10 @@ const { subscribe } = require('.');
 var Schema = mongoose.Schema;
 
 const usersSchema = new Schema({
-  userName: String,
-  password: String,
-  email: String,
-  subscribe: { type: Boolean }
+    userName: String,
+    password: String,
+    email: String,
+    subscribe: { type: Boolean }
 });
 
 const usersModel = mongoose.model("users", usersSchema);
@@ -31,70 +31,70 @@ router.get('/admin', function (req, res, next) {
     <div><button type="submit">spara</button></div></form></div>`;
 
     res.send(inputField);
-    
+
 });
 
 router.post('/admin', function (req, res) {
 
-    let password =  req.body.password; 
+    let password = req.body.password;
     console.log(req.body.password);
-    let inputField =``; 
-        if (password == "admin") {
-            inputField += `<div><h2>Inloggad</h2></div>`; 
-            usersModel.find({})
+    let inputField = ``;
+    if (password == "admin") {
+        inputField += `<div><h2>Inloggad</h2></div>`;
+        usersModel.find({})
             .then((data) => {
-              console.log("data123:", data);
-              inputField += `<div><h2>Användare</h2>`;
-        
-              for (user in data) {
-                inputField += `<div><h3>` + data[user].userName + `</h3>`;
-        
-                if (data[user].subscribe === true) {
-                    inputField += `Prenumererar: Ja, Epostadress: ` + data[user].email + `</p></div>`;
-                } else {
-                    inputField += `Prenumererar: Nej</p></div>`;
+                console.log("data123:", data);
+                inputField += `<div><h2>Användare</h2>`;
+
+                for (user in data) {
+                    inputField += `<div><h3>` + data[user].userName + `</h3>`;
+
+                    if (data[user].subscribe === true) {
+                        inputField += `Prenumererar: Ja, Epostadress: ` + data[user].email + `</p></div>`;
+                    } else {
+                        inputField += `Prenumererar: Nej</p></div>`;
+                    }
+
                 }
-        
-              }
-              inputField += `</div>`;
-              res.send(inputField);
-    
+                inputField += `</div>`;
+                res.send(inputField);
+
             })
             .catch((error) => {
-              console.log(`error:`, daerrorta);
+                console.log(`error:`, daerrorta);
             });
-            
-        }  else{
-            inputField += `<div><h2>fel lösenord</h2></div>`; 
-            res.send(inputField);
-        }
-        
-    });
+
+    } else {
+        inputField += `<div><h2>fel lösenord</h2></div>`;
+        res.send(inputField);
+    }
+
+});
 
 //------------------------ register new user ------------------------
 
 router.post("/new", function (req, res) {
-  console.log("Ny användare sparad");
-  newUserInfo = req.body.newUserInfo;
-  console.log(newUserInfo);
+    console.log("Ny användare sparad");
+    newUserInfo = req.body.newUserInfo;
+    console.log(newUserInfo);
 
-  let data = {
-    userName: newUserInfo.userName,
-    password: newUserInfo.password,
-    email: newUserInfo.email,
-    subscribe: newUserInfo.subscribe
-  };
+    let data = {
+        userName: newUserInfo.userName,
+        password: newUserInfo.password,
+        email: newUserInfo.email,
+        subscribe: newUserInfo.subscribe
+    };
 
-  const newUser = new usersModel(data);
+    const newUser = new usersModel(data);
 
-   newUser.save((error) => {
-    if (error) {
-      console.log("something happened")
-    } else {
-      console.log("Data has been saved");
-      res.json("User created");
-    }
-  });
+    newUser.save((error) => {
+        if (error) {
+            console.log("something happened")
+        } else {
+            console.log("Data has been saved");
+            res.json("User created");
+        }
+    });
 
 
 });
@@ -102,53 +102,53 @@ router.post("/new", function (req, res) {
 
 // ------------------------checking if password and usernamne is correct ------------------------
 router.post("/login", function (req, res) {
-  console.log("Ny användare sparad");
-  userInfo = req.body.userInfo;
-  console.log(userInfo);
+    console.log("Ny användare sparad");
+    userInfo = req.body.userInfo;
+    console.log(userInfo);
 
-  const query = usersModel.findOne({ 'userName': userInfo.userName });
+    const query = usersModel.findOne({ 'userName': userInfo.userName });
 
-  query.select('userName password _id');
+    query.select('userName password _id');
 
-  query.exec(function (err, user) {
-    if (user === null) {
-      res.json("error");
-      console.log("fel användarnamn");
-    } else {
-      console.log('%s %s', user.userName, user.password, user._id);
+    query.exec(function (err, user) {
+        if (user === null) {
+            res.json("error");
+            console.log("fel användarnamn");
+        } else {
+            console.log('%s %s', user.userName, user.password, user._id);
 
-      if (userInfo.password === user.password){
-        console.log("rätt lösenord");
-        res.json({
-            loggedin: "yes",
-            id: user._id
-        });
-      } else {
-        res.json("error");
-        console.log("fel lösenord");
-      }
-    }
-  });
+            if (userInfo.password === user.password) {
+                console.log("rätt lösenord");
+                res.json({
+                    loggedin: "yes",
+                    id: user._id
+                });
+            } else {
+                res.json("error");
+                console.log("fel lösenord");
+            }
+        }
+    });
 });
 
-  //------------------------  See if the user is subscribing to newsletter ------------------------
-  router.post("/login/user", function (req, res) {
+//------------------------  See if the user is subscribing to newsletter ------------------------
+router.post("/login/user", function (req, res) {
     console.log("Funkar");
-   id = req.body.id;
+    id = req.body.id;
     console.log(id);
 
     const query = usersModel.findOne({ '_id': id });
 
-    query.select('_id subscribe' );
+    query.select('_id subscribe');
 
     query.exec(function (err, user) {
-        if (user.subscribe === true){
+        if (user.subscribe === true) {
             res.json("true");
-        console.log("user are subscribing");
-    } else {
-        res.json("false");
-        console.log("user are not subscribing");
-    }
+            console.log("user are subscribing");
+        } else {
+            res.json("false");
+            console.log("user are not subscribing");
+        }
     });
 });
 
@@ -156,11 +156,11 @@ router.post("/login", function (req, res) {
 router.post("/changestatus", function (req, res) {
     console.log("click på knapp");
     userId = req.body.id;
-   changedStatus = req.body.changedStatus;
+    changedStatus = req.body.changedStatus;
     console.log(changedStatus);
     console.log(userId);
 
-    usersModel.findOneAndUpdate({_id: userId}, {$set:{subscribe:changedStatus}}, {new: true}, (err, doc) => {
+    usersModel.findOneAndUpdate({ _id: userId }, { $set: { subscribe: changedStatus } }, { new: true }, (err, doc) => {
         if (err) {
             console.log("Something wrong when updating data!");
         }
