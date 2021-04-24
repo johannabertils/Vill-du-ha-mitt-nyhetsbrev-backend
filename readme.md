@@ -12,6 +12,12 @@ Npm start
 --> localhost:3010 i webbläsaren
 ```
 
+Nodemon: 
+```bash
+  npm install nodemon 
+  --> nodemon start 
+```
+
 Cors: 
 ```bash
  npm install cors
@@ -26,6 +32,11 @@ Mangodb:
 Mongoose
 ```bash
  npm install mongoose
+```
+
+Crypto-js
+```bash
+ npm install crypto-js
 ```
 
 # How to

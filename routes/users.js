@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const fs = require("fs");
 const cors = require("cors");
+var CryptoJS = require("crypto-js"); 
 
 router.use(cors());
 
@@ -95,8 +96,6 @@ router.post("/new", function (req, res) {
             res.json("User created");
         }
     });
-
-
 });
 
 
