@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const fs = require("fs");
 const cors = require("cors");
-var CryptoJS = require("crypto-js"); 
+var CryptoJS = require("crypto-js");
 
 router.use(cors());
 
@@ -79,9 +79,14 @@ router.post("/new", function (req, res) {
     newUserInfo = req.body.newUserInfo;
     console.log(newUserInfo);
 
+    let userPass = newUserInfo.password;
+    console.log("pass" + userPass);
+    let cryptoPass = CryptoJS.AES.encrypt(userPass, "Salt Nyckel").toString();
+
+    console.log("new" + cryptoPass);
     let data = {
         userName: newUserInfo.userName,
-        password: newUserInfo.password,
+        password: cryptoPass,
         email: newUserInfo.email,
         subscribe: newUserInfo.subscribe
     };
@@ -116,7 +121,13 @@ router.post("/login", function (req, res) {
         } else {
             console.log('%s %s', user.userName, user.password, user._id);
 
-            if (userInfo.password === user.password) {
+            let originalPass = CryptoJS.AES.decrypt(user.password, "Salt Nyckel").toString(CryptoJS.enc.Utf8);
+
+            console.log("user.password" + user.password);
+            console.log("originalPass" + originalPass);
+
+
+            if (userInfo.password === originalPass) {
                 console.log("rätt lösenord");
                 res.json({
                     loggedin: "yes",

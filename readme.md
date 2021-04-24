@@ -1,5 +1,12 @@
 
-##   back end part of repository https://github.com/johannabertils/Vill-du-ha-mitt-nyhetsbrev-frontend
+#   Back end part of repository:
+
+https://github.com/johannabertils/Vill-du-ha-mitt-nyhetsbrev-frontend
+
+
+#   Link to heroku 
+
+https://nyhetsbrevjohanna.herokuapp.com
 
 # Installations
 
@@ -42,5 +49,5 @@ Crypto-js
 # How to
 
 ```bash
- localhost:3010 -> login with username "admin".
+ localhost:3010 -> login with password "admin".
 ```
