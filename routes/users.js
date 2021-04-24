@@ -44,7 +44,7 @@ router.post('/admin', function (req, res) {
         inputField += `<div><h2>Inloggad</h2></div>`;
         usersModel.find({})
             .then((data) => {
-                console.log("data123:", data);
+                console.log("data:", data);
                 inputField += `<div><h2>Användare</h2>`;
 
                 for (user in data) {
@@ -83,7 +83,7 @@ router.post("/new", function (req, res) {
     console.log("pass" + userPass);
     let cryptoPass = CryptoJS.AES.encrypt(userPass, "Salt Nyckel").toString();
 
-    console.log("new" + cryptoPass);
+    console.log("Cyptated" + cryptoPass);
     let data = {
         userName: newUserInfo.userName,
         password: cryptoPass,
@@ -106,7 +106,7 @@ router.post("/new", function (req, res) {
 
 // ------------------------checking if password and usernamne is correct ------------------------
 router.post("/login", function (req, res) {
-    console.log("Ny användare sparad");
+    console.log("New user saved");
     userInfo = req.body.userInfo;
     console.log(userInfo);
 
@@ -117,7 +117,7 @@ router.post("/login", function (req, res) {
     query.exec(function (err, user) {
         if (user === null) {
             res.json("error");
-            console.log("fel användarnamn");
+            console.log("wrong username");
         } else {
             console.log('%s %s', user.userName, user.password, user._id);
 
@@ -128,14 +128,14 @@ router.post("/login", function (req, res) {
 
 
             if (userInfo.password === originalPass) {
-                console.log("rätt lösenord");
+                console.log("password correct");
                 res.json({
                     loggedin: "yes",
                     id: user._id
                 });
             } else {
                 res.json("error");
-                console.log("fel lösenord");
+                console.log("password not correct");
             }
         }
     });
@@ -143,7 +143,7 @@ router.post("/login", function (req, res) {
 
 //------------------------  See if the user is subscribing to newsletter ------------------------
 router.post("/login/user", function (req, res) {
-    console.log("Funkar");
+    console.log("working");
     id = req.body.id;
     console.log(id);
 
@@ -154,17 +154,17 @@ router.post("/login/user", function (req, res) {
     query.exec(function (err, user) {
         if (user.subscribe === true) {
             res.json("true");
-            console.log("user are subscribing");
+            console.log("user is subscribing");
         } else {
             res.json("false");
-            console.log("user are not subscribing");
+            console.log("user is not subscribing");
         }
     });
 });
 
 // ------------------------ Change status of subscribtion ------------------------
 router.post("/changestatus", function (req, res) {
-    console.log("click på knapp");
+    console.log("click");
     userId = req.body.id;
     changedStatus = req.body.changedStatus;
     console.log(changedStatus);

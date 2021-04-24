@@ -49,5 +49,5 @@ Crypto-js
 # How to
 
 ```bash
- localhost:3010 -> login with password "admin".
+ localhost:3010 -> log in with password "admin".
 ```
